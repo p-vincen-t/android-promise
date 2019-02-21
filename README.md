@@ -18,15 +18,15 @@ Easily interacting with sqlite database, make http requests, store shared prefer
 #### build.gradle
 ```
 allprojects {
-        repositories {
-            ...
-            maven { url 'https://jitpack.io' }
-        }
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
     }
+}
 
 
 dependencies {
-            implementation 'com.github.dev4vin:android-promise:1.0.1'
+    implementation 'com.github.dev4vin:android-promise:1.0.2'
 }
 ```
 #### Stay Updated
