@@ -1,25 +1,19 @@
 /*
- *
- *  * Copyright 2017, Peter Vincent
- *  * Licensed under the Apache License, Version 2.0, Promise.
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  * Unless required by applicable law or agreed to in writing,
- *  * software distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
- *
+ * Copyright 2017, Peter Vincent
+ * Licensed under the Apache License, Version 2.0, Promise.
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package me.dev4vin;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -34,44 +28,29 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
-import me.dev4vin.data.log.LogUtil;
-import me.dev4vin.data.net.FastParser;
-import me.dev4vin.model.Action;
-import me.dev4vin.model.List;
-import me.dev4vin.model.Message;
-import me.dev4vin.model.ResponseCallBack;
-import me.dev4vin.model.function.MapFunction;
-import me.dev4vin.util.Conditions;
+import me.dev4vin.promisemodel.Action;
+import me.dev4vin.promisemodel.List;
+import me.dev4vin.promisemodel.Message;
+import me.dev4vin.promisemodel.ResponseCallBack;
+import me.dev4vin.promisemodel.function.MapFunction;
+import me.dev4vin.utils.Conditions;
 
-/** Created on 2/13/18 by yoctopus. */
+/**
+ * Created on 2/13/18 by yoctopus.
+ */
 public class Promise {
   public static final String TAG = LogUtil.makeTag(Promise.class);
   private static Promise instance;
   private Context context;
   private ExecutorService executor;
   private PublishSubject<Message> bus;
-  public final BroadcastReceiver networkChangeReceiver =
-      new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-          if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false)) {
-              LogUtil.e(TAG, "network connection gone");
-            instance().send(new Message(TAG, "Network shut down"));
-          }
-          if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, true)) {
-              LogUtil.e(TAG, "network connection back");
-            instance().send(new Message(TAG, FastParser.NETWORK_IS_BACK));
-          }
-        }
-      };
+
   private CompositeDisposable disposable;
   private List<Disposable> disposables;
 
   private Promise(Context context) {
     this.context = context;
     disposable = new CompositeDisposable();
-    context.registerReceiver(
-        networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
   }
 
   public static Promise init(Context context) {
@@ -99,8 +78,7 @@ public class Promise {
             .subscribe(
                 new Consumer<Message>() {
                   @Override
-                  public void accept(Message object)
-                  {
+                  public void accept(Message object) {
                     if (sender.equals(object.sender())) callBack.response(object);
                   }
                 },
@@ -157,12 +135,12 @@ public class Promise {
     if (disposables == null) disposables = new List<>();
     disposables.add(
         Observable.fromCallable(
-                new Callable<T>() {
-                  @Override
-                  public T call() throws Exception {
-                    return action.execute();
-                  }
-                })
+            new Callable<T>() {
+              @Override
+              public T call() throws Exception {
+                return action.execute();
+              }
+            })
             .observeOn(Schedulers.from(instance().executor))
             .subscribeOn(Schedulers.from(instance().executor))
             .subscribe(
@@ -215,28 +193,28 @@ public class Promise {
     if (disposables == null) disposables = new List<>();
     disposables.add(
         Observable.zip(
-                actions.map(
-                    new MapFunction<ObservableSource<?>, Action<?>>() {
-                      @Override
-                      public ObservableSource<?> from(final Action<?> action) {
-                        return new ObservableSource<Object>() {
-                          @Override
-                          public void subscribe(Observer<? super Object> observer) {
-                            try {
-                              observer.onNext(action.execute());
-                            } catch (Exception e) {
-                              observer.onError(e);
-                            }
-                          }
-                        };
-                      }
-                    }),
-                new Function<Object[], List<Object>>() {
+            actions.map(
+                new MapFunction<ObservableSource<?>, Action<?>>() {
                   @Override
-                  public List<Object> apply(Object[] objects) {
-                    return List.fromArray(objects);
+                  public ObservableSource<?> from(final Action<?> action) {
+                    return new ObservableSource<Object>() {
+                      @Override
+                      public void subscribe(Observer<? super Object> observer) {
+                        try {
+                          observer.onNext(action.execute());
+                        } catch (Exception e) {
+                          observer.onError(e);
+                        }
+                      }
+                    };
                   }
-                })
+                }),
+            new Function<Object[], List<Object>>() {
+              @Override
+              public List<Object> apply(Object[] objects) {
+                return List.fromArray(objects);
+              }
+            })
             .observeOn(Schedulers.from(instance().executor))
             .subscribeOn(Schedulers.from(instance().executor))
             .subscribe(
@@ -256,7 +234,6 @@ public class Promise {
   }
 
   public boolean terminate() {
-    context.unregisterReceiver(networkChangeReceiver);
     context = null;
     disposable.dispose();
     disposables.clear();

@@ -1,18 +1,31 @@
+/*
+ * Copyright 2017, Peter Vincent
+ * Licensed under the Apache License, Version 2.0, Promise.
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package me.dev4vin.samplepromiseapp.data.db;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import me.dev4vin.promisedb.Corrupt;
+import me.dev4vin.promisedb.FastDB;
+import me.dev4vin.promisedb.SList;
+import me.dev4vin.promisedb.Table;
+import me.dev4vin.promisedb.query.QueryBuilder;
+import me.dev4vin.promisemodel.List;
+import me.dev4vin.promisemodel.Message;
 import me.dev4vin.samplepromiseapp.models.Todo;
 import me.dev4vin.Promise;
-import me.dev4vin.data.db.Corrupt;
-import me.dev4vin.data.db.FastDB;
-import me.dev4vin.data.db.Table;
-import me.dev4vin.data.db.query.QueryBuilder;
-import me.dev4vin.data.log.LogUtil;
-import me.dev4vin.model.List;
-import me.dev4vin.model.Message;
-import me.dev4vin.model.SList;
+import me.dev4vin.LogUtil;
 
 public class AppDatabase extends FastDB {
 

@@ -1,3 +1,16 @@
+/*
+ * Copyright 2017, Peter Vincent
+ * Licensed under the Apache License, Version 2.0, Promise.
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package me.dev4vin.samplepromiseapp.data.net;
 
 import androidx.collection.ArrayMap;
@@ -8,22 +21,22 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
+import me.dev4vin.promisemodel.List;
+import me.dev4vin.promisemodel.ResponseCallBack;
+import me.dev4vin.promisenet.net.Config;
+import me.dev4vin.promisenet.net.EndPoint;
+import me.dev4vin.promisenet.net.FastParser;
+import me.dev4vin.promisenet.net.Interceptor;
+import me.dev4vin.promisenet.net.extras.HttpPayload;
+import me.dev4vin.promisenet.net.extras.HttpResponse;
 import me.dev4vin.samplepromiseapp.auth.Session;
 import me.dev4vin.samplepromiseapp.error.ServerError;
 import me.dev4vin.samplepromiseapp.models.Todo;
-import me.dev4vin.data.log.LogUtil;
-import me.dev4vin.data.net.Config;
-import me.dev4vin.data.net.EndPoint;
-import me.dev4vin.data.net.FastParser;
-import me.dev4vin.data.net.Interceptor;
-import me.dev4vin.data.net.extras.HttpPayload;
-import me.dev4vin.data.net.extras.HttpResponse;
-import me.dev4vin.model.List;
-import me.dev4vin.model.ResponseCallBack;
+import me.dev4vin.LogUtil;
 
 public class ServerAPI extends FastParser {
   private static ServerAPI instance;
-  private static final String UPSTREAM_URL = "https://somelink.com/api/";
+  private static final String UPSTREAM_URL = "https://jsonplaceholder.typicode.com/";
   private String TAG = LogUtil.makeTag(ServerAPI.class);
 
   /**

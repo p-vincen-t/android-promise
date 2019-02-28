@@ -1,0 +1,63 @@
+/*
+ * Copyright 2017, Peter Vincent
+ * Licensed under the Apache License, Version 2.0, Promise.
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+apply plugin: 'com.android.library'
+
+ext {
+    libraryVersion = '1.0.2'
+    libraryVersionName = 2
+    compileSdkVersion = 28
+    buildToolsVersion = "28.0.3"
+    supportLibVersion = "28.0.0"
+    minSdkVersion = 15
+    bintrayRepo = 'maven'
+    bintrayName = 'promise'
+    publishedGroupId = 'me.petervincent.android'
+    artifact = 'promise'
+    libraryName = 'AndroidPromise'
+    libraryDescription = 'Android promise, android commons'
+    siteUrl = 'https://github.com/vincentwasonga/android-promise'
+    gitUrl = 'https://github.com/vincentwasonga/android-promise.git'
+    developerId = 'your_id'
+    developerName = 'Peter Vincent'
+    organization = 'Vincent Wasonga'
+    developerEmail = 'vinsonpeter8@gmail.com'
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+    api "com.android.support:support-v4:$project.ext.supportLibVersion"
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
