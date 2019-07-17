@@ -20,8 +20,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.os.Handler;
+import android.os.Looper;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -29,12 +30,10 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.exceptions.UndeliverableException;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
@@ -54,6 +53,7 @@ public class Promise {
   private Context context;
   private ExecutorService executor;
   private PublishSubject<Message> bus;
+  private Handler handler;
   private final BroadcastReceiver networkChangeReceiver =
       new BroadcastReceiver() {
         @Override
@@ -106,7 +106,7 @@ public class Promise {
                 object -> {
                   if (sender.equals(object.sender())) callBack.response(object);
                 },
-                throwable -> callBack.error(throwable)));
+                callBack::error));
     disposable.add(Conditions.checkNotNull(disposables.last()));
     return disposables.size() - 1;
   }
@@ -136,12 +136,18 @@ public class Promise {
   }
 
   public Promise disableErrors() {
-    Thread.setDefaultUncaughtExceptionHandler((t, e) -> { });
+    Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+    });
     return this;
   }
 
   public void execute(Runnable runnable) {
     executor.execute(runnable);
+  }
+
+  public void executeOnUi(Runnable runnable) {
+    if (handler == null) handler = new Handler(Looper.getMainLooper());
+    handler.post(runnable);
   }
 
   public void executeRepeatativelyWithSeconds(Runnable runnable, long waitInterval) {
@@ -159,6 +165,20 @@ public class Promise {
             action::execute)
             .observeOn(Schedulers.from(executor))
             .subscribeOn(Schedulers.from(executor))
+            .subscribe(
+                responseCallBack::response,
+                responseCallBack::error));
+    disposable.add(Conditions.checkNotNull(disposables.last()));
+  }
+
+  public <T> void executeOnUi(
+      final Action<T> action, final ResponseCallBack<T, Throwable> responseCallBack) {
+    if (disposables == null) disposables = new List<>();
+    disposables.add(
+        Observable.fromCallable(
+            action::execute)
+            .observeOn(Schedulers.from(executor))
+            .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 responseCallBack::response,
                 responseCallBack::error));
@@ -199,17 +219,39 @@ public class Promise {
     if (disposables == null) disposables = new List<>();
     disposables.add(
         Observable.zip(
-                actions.map(
-                    (MapFunction<ObservableSource<?>, Action<?>>) action -> (ObservableSource<Object>) observer -> {
-                      try {
-                        observer.onNext(action.execute());
-                      } catch (Exception e) {
-                        observer.onError(e);
-                      }
-                    }),
+            actions.map(
+                (MapFunction<ObservableSource<?>, Action<?>>) action -> (ObservableSource<Object>) observer -> {
+                  try {
+                    observer.onNext(action.execute());
+                  } catch (Exception e) {
+                    observer.onError(e);
+                  }
+                }),
             List::fromArray)
             .observeOn(Schedulers.from(executor))
             .subscribeOn(Schedulers.from(executor))
+            .subscribe(
+                responseCallBack::response,
+                responseCallBack::error));
+    disposable.add(Conditions.checkNotNull(disposables.last()));
+  }
+
+  public void executeOnUi(
+      final List<Action<?>> actions, final ResponseCallBack<List<?>, Throwable> responseCallBack) {
+    if (disposables == null) disposables = new List<>();
+    disposables.add(
+        Observable.zip(
+            actions.map(
+                (MapFunction<ObservableSource<?>, Action<?>>) action -> (ObservableSource<Object>) observer -> {
+                  try {
+                    observer.onNext(action.execute());
+                  } catch (Exception e) {
+                    observer.onError(e);
+                  }
+                }),
+            List::fromArray)
+            .observeOn(Schedulers.from(executor))
+            .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 responseCallBack::response,
                 responseCallBack::error));

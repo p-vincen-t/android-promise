@@ -9,3 +9,9 @@
 /build
 /captures
 .externalNativeBuild
+appbase
+promisecommons
+promisedb
+promisemodel
+promisenet
+promisepref
