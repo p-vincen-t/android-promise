@@ -25,10 +25,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -36,20 +32,23 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import promise.cac.anim.Anim;
 import promise.cac.anim.AnimDuration;
 import promise.cac.anim.Animator;
 import promise.data.log.LogUtil;
 import promise.model.List;
 import promise.model.Viewable;
-import promise.model.function.MapFunction;
 import promise.util.Conditions;
 
 /**
  * Created by yoctopus on 11/6/17.
  */
-public class PromiseAdapter<T extends Viewable>
-    extends RecyclerView.Adapter<PromiseAdapter<T>.Holder> {
+public class PromiseAdapter<T extends Viewable> extends RecyclerView.Adapter<PromiseAdapter<T>.Holder> {
   private String TAG = LogUtil.makeTag(PromiseAdapter.class);
   private String AdapterItems = "__adapter_items__";
   private Indexer indexer;
@@ -64,10 +63,10 @@ public class PromiseAdapter<T extends Viewable>
   private Handler handler;
   private RecyclerView recyclerView;
   private OnAfterInitListener onAfterInitListener;
-  private SparseArray<T> sparseArray= new SparseArray<>();
+  private SparseArray<T> sparseArray = new SparseArray<>();
 
   public PromiseAdapter(@NonNull Listener<T> listener) {
-    this(new List<T>(), listener);
+    this(new List<>(), listener);
   }
 
   public PromiseAdapter(@NonNull List<T> list, @NonNull Listener<T> listener) {
@@ -186,12 +185,7 @@ public class PromiseAdapter<T extends Viewable>
               if (viewHolder instanceof PromiseAdapter.Holder) {
                 final Holder holder = (Holder) viewHolder;
                 Response response =
-                    new Response() {
-                      @Override
-                      public void call() {
-                        update(holder.t);
-                      }
-                    };
+                    () -> update(holder.t);
                 switch (direction) {
                   case ItemTouchHelper.RIGHT:
                     swipeListener.onSwipeRight(holder.t, response);
@@ -338,12 +332,7 @@ public class PromiseAdapter<T extends Viewable>
           if (view instanceof View)
             ((View) view)
                 .setOnClickListener(
-                    new View.OnClickListener() {
-                      @Override
-                      public void onClick(View v) {
-                        listener.onClick(t, v.getId());
-                      }
-                    });
+                    v -> listener.onClick(t, v.getId()));
         } catch (IllegalAccessException ignored) {
           /*LogUtil.e(TAG, "illegal access ", ignored);*/
         }
@@ -358,13 +347,9 @@ public class PromiseAdapter<T extends Viewable>
           if (view instanceof View)
             ((View) view)
                 .setOnLongClickListener(
-                    new View.OnLongClickListener() {
-                      @Override
-                      public boolean onLongClick(View v) {
-
-                        longClickListener.onLongClick(t, v.getId());
-                        return true;
-                      }
+                    v -> {
+                      longClickListener.onLongClick(t, v.getId());
+                      return true;
                     });
         } catch (IllegalAccessException ignored) {
         }
@@ -386,22 +371,12 @@ public class PromiseAdapter<T extends Viewable>
         if (reverse) list.reverse();
         index();
         handler.post(
-            new Runnable() {
-              @Override
-              public void run() {
-                notifyDataSetChanged();
-              }
-            });
+            PromiseAdapter.this::notifyDataSetChanged);
       } else {
         list.add(t);
         t.index(0);
         handler.post(
-            new Runnable() {
-              @Override
-              public void run() {
-                notifyItemInserted(0);
-              }
-            });
+            () -> notifyItemInserted(0));
       }
     }
 
@@ -414,22 +389,12 @@ public class PromiseAdapter<T extends Viewable>
         setList(list1);
         index();
         handler.post(
-            new Runnable() {
-              @Override
-              public void run() {
-                notifyDataSetChanged();
-              }
-            });
+            PromiseAdapter.this::notifyDataSetChanged);
       } else {
         list.add(t);
         t.index(0);
         handler.post(
-            new Runnable() {
-              @Override
-              public void run() {
-                notifyItemInserted(0);
-              }
-            });
+            () -> notifyItemInserted(0));
       }
     }
 
@@ -437,12 +402,7 @@ public class PromiseAdapter<T extends Viewable>
       PromiseAdapter.this.list = list;
       index();
       handler.post(
-          new Runnable() {
-            @Override
-            public void run() {
-              notifyDataSetChanged();
-            }
-          });
+          PromiseAdapter.this::notifyDataSetChanged);
     }
 
     void remove(final T t) {
@@ -450,36 +410,21 @@ public class PromiseAdapter<T extends Viewable>
       list.remove(t.index());
       index();
       handler.post(
-          new Runnable() {
-            @Override
-            public void run() {
-              notifyItemRemoved(t.index());
-            }
-          });
+          () -> notifyItemRemoved(t.index()));
     }
 
     void update(final T t) {
       if (list == null) return;
       if (t.index() >= list.size()) return;
       list.set(t.index(), t);
+      /*notifyItemChanged(t.index());*/
       handler.post(
-          new Runnable() {
-            @Override
-            public void run() {
-              notifyDataSetChanged();
-              /*notifyItemChanged(t.index());*/
-            }
-          });
+          PromiseAdapter.this::notifyDataSetChanged);
     }
 
     void updateAll() {
       handler.post(
-          new Runnable() {
-            @Override
-            public void run() {
-              notifyDataSetChanged();
-            }
-          });
+          PromiseAdapter.this::notifyDataSetChanged);
     }
 
     void add(List<T> list) {
@@ -490,12 +435,7 @@ public class PromiseAdapter<T extends Viewable>
       if (list == null || list.isEmpty()) return;
       list.clear();
       handler.post(
-          new Runnable() {
-            @Override
-            public void run() {
-              notifyDataSetChanged();
-            }
-          });
+          PromiseAdapter.this::notifyDataSetChanged);
     }
 
     int size() {
@@ -551,22 +491,16 @@ public class PromiseAdapter<T extends Viewable>
         int fromY,
         int toX,
         int toY) {
-      if (getSupportsChangeAnimations()) {
+      if (getSupportsChangeAnimations())
         return super.animateChange(oldHolder, newHolder, fromX, fromY, toX, toY);
-      } else {
+      else {
         if (oldHolder == newHolder) {
-          if (oldHolder != null) {
-            // if the two holders are equal, call dispatch change only once
-            dispatchChangeFinished(oldHolder, /*ignored*/ true);
-          }
+          // if the two holders are equal, call dispatch change only once
+          if (oldHolder != null) dispatchChangeFinished(oldHolder, /*ignored*/ true);
         } else {
           // else call dispatch change once for every non-null holder
-          if (oldHolder != null) {
-            dispatchChangeFinished(oldHolder, true);
-          }
-          if (newHolder != null) {
-            dispatchChangeFinished(newHolder, false);
-          }
+          if (oldHolder != null) dispatchChangeFinished(oldHolder, true);
+          if (newHolder != null) dispatchChangeFinished(newHolder, false);
         }
         // we don't need a call to requestPendingTransactions after this, return false.
         return false;
