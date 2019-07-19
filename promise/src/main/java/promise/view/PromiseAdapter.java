@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -65,11 +66,11 @@ public class PromiseAdapter<T extends Viewable> extends RecyclerView.Adapter<Pro
   private OnAfterInitListener onAfterInitListener;
   private SparseArray<T> sparseArray = new SparseArray<>();
 
-  public PromiseAdapter(@NonNull Listener<T> listener) {
+  public PromiseAdapter(@Nullable Listener<T> listener) {
     this(new List<>(), listener);
   }
 
-  public PromiseAdapter(@NonNull List<T> list, @NonNull Listener<T> listener) {
+  public PromiseAdapter(@NonNull List<T> list, @Nullable Listener<T> listener) {
     this.list = Conditions.checkNotNull(list);
     this.listener = listener;
     this.handler = new Handler(Looper.getMainLooper());
@@ -311,7 +312,6 @@ public class PromiseAdapter<T extends Viewable> extends RecyclerView.Adapter<Pro
   public class Holder extends RecyclerView.ViewHolder {
     public View view;
     T t;
-
     public Holder(View itemView) {
       super(itemView);
       view = itemView;

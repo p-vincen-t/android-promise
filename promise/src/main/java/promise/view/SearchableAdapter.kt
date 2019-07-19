@@ -26,7 +26,7 @@ import promise.util.Conditions
  * Created by yoctopus on 11/21/17.
  */
 
-class SearchableAdapter<T : Searchable>(listener: Listener<T>) : PromiseAdapter<T>(listener), Filterable {
+open class SearchableAdapter<T : Searchable>(listener: Listener<T>?) : PromiseAdapter<T>(listener), Filterable {
 
   private val TAG = LogUtil.makeTag(SearchableAdapter::class.java)
 
