@@ -145,10 +145,21 @@ public class Promise {
     executor.execute(runnable);
   }
 
+  public void execute(Runnable runnable, long wait) {
+    ///TODO
+    executor.execute(runnable);
+  }
+
   public void executeOnUi(Runnable runnable) {
     if (handler == null) handler = new Handler(Looper.getMainLooper());
     handler.post(runnable);
   }
+
+  public void executeOnUi(Runnable runnable, long wait) {
+    if (handler == null) handler = new Handler(Looper.getMainLooper());
+    handler.postDelayed(runnable, wait);
+  }
+
 
   public void executeRepeatativelyWithSeconds(Runnable runnable, long waitInterval) {
     ScheduledExecutorService scheduler =

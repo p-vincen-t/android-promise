@@ -47,10 +47,10 @@ open class SearchableAdapter<T : Searchable>(listener: Listener<T>?) : PromiseAd
   override fun getFilter(): Filter = object : Filter() {
     override fun performFiltering(charSequence: CharSequence?): FilterResults? {
       if (charSequence.isNullOrEmpty() or charSequence.isNullOrBlank()) return null
-      val filterData: List<T>?
-      filterData = originalList.filter { t -> t.onSearch(charSequence.toString()) }
+      val filterData: List<T> = originalList.filter {  it.onSearch(charSequence.toString()) }
       val filterResults = FilterResults()
       filterResults.values = filterData
+      filterResults.count = filterData.size
       return filterResults
       /*LogUtil.e(TAG, charSequence)
       val results = FilterResults()
@@ -66,7 +66,13 @@ open class SearchableAdapter<T : Searchable>(listener: Listener<T>?) : PromiseAd
     }
 
     override fun publishResults(charSequence: CharSequence, filterResults: FilterResults?) {
-      if (filterResults != null && filterResults.count > 0) setList(filterResults.values as List<T>)
+      if (filterResults != null && filterResults.count > 0) {
+        clear()
+        setList(filterResults.values as List<T>)
+      } else {
+        clear()
+        setList(originalList)
+      }
     }
   }
 }
