@@ -50,13 +50,15 @@ class SearchActivity : AppCompatActivity() {
         object : SearchView.OnQueryTextListener {
 
           override fun onQueryTextSubmit(s: String): Boolean {
-            searchableAdapter.search(s)
+            Promise.instance().executeOnUi {
+              searchableAdapter.search(s)
+            }
             return true
           }
 
           override fun onQueryTextChange(s: String): Boolean {
             if (TextUtils.isEmpty(s)) return false
-            searchableAdapter.search(s)
+            onQueryTextSubmit(s)
             return true
           }
         })
