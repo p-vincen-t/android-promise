@@ -79,6 +79,24 @@ public class PreferenceStorage<T extends S> implements SyncIDataStore<T> {
     return null;
   }
 
+  @Nullable
+  @Override
+  public Object save(@NotNull List<T> t, @Nullable Map<String, ?> args) throws Exception {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public Object update(@NotNull List<T> t, @Nullable Map<String, ?> args) throws Exception {
+    return null;
+  }
+
+  @Nullable
+  @Override
+  public Object delete(@NotNull List<T> t, @Nullable Map<String, ?> args) throws Exception {
+    return null;
+  }
+
   public interface MapFilter<T extends S> {
     boolean filter(T t, Map<String, ?> args);
   }
