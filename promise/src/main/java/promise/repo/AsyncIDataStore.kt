@@ -1,14 +1,13 @@
 package promise.repo
 
 import promise.model.List
-import promise.model.S
 
 /**
  *
  *
  * @param T
  */
-interface AsyncIDataStore<T : S> {
+interface AsyncIDataStore<T> {
   /**
    *
    *
@@ -16,7 +15,7 @@ interface AsyncIDataStore<T : S> {
    * @param err
    * @param args
    */
-  fun all(res: (List<T>) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>? = null)
+  fun all(res: (List<T>, Any?) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>? = null)
 
   /**
    *
@@ -25,7 +24,7 @@ interface AsyncIDataStore<T : S> {
    * @param err
    * @param args
    */
-  fun one(res: (T) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>? = null)
+  fun one(res: (T, Any?) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>? = null)
 
   /**
    *
@@ -102,7 +101,7 @@ interface AsyncIDataStore<T : S> {
  *
  * @param T
  */
-open class AbstractAsyncIDataStore<T : S> : AsyncIDataStore<T> {
+open class AbstractAsyncIDataStore<T> : AsyncIDataStore<T> {
   /**
    *
    *
@@ -110,8 +109,8 @@ open class AbstractAsyncIDataStore<T : S> : AsyncIDataStore<T> {
    * @param err
    * @param args
    */
-  override fun all(res: (List<T>) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>?) =
-      res(List())
+  override fun all(res: (List<T>, Any?) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>?) =
+      res(List(), Any())
 
   /**
    *
@@ -120,7 +119,7 @@ open class AbstractAsyncIDataStore<T : S> : AsyncIDataStore<T> {
    * @param err
    * @param args
    */
-  override fun one(res: (T) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>?) {
+  override fun one(res: (T, Any?) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>?) {
     err?.invoke(Exception())
   }
 
@@ -143,8 +142,9 @@ open class AbstractAsyncIDataStore<T : S> : AsyncIDataStore<T> {
    * @param err
    * @param args
    */
-  override fun save(t: List<T>, res: (Any?) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>?) =
-      res(Any())
+  override fun save(t: List<T>, res: (Any?) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>?) {
+    res(Any())
+  }
 
   /**
    *
@@ -165,8 +165,9 @@ open class AbstractAsyncIDataStore<T : S> : AsyncIDataStore<T> {
    * @param err
    * @param args
    */
-  override fun update(t: List<T>, res: (Any?) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>?) =
-      res(Any())
+  override fun update(t: List<T>, res: (Any?) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>?) {
+    res(Any())
+  }
 
   /**
    *
@@ -187,8 +188,9 @@ open class AbstractAsyncIDataStore<T : S> : AsyncIDataStore<T> {
    * @param err
    * @param args
    */
-  override fun delete(t: List<T>, res: (Any?) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>?) =
-      res(Any())
+  override fun delete(t: List<T>, res: (Any?) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>?) {
+    res(Any())
+  }
 
   /**
    *

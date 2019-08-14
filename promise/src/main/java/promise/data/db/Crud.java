@@ -16,38 +16,38 @@
 package promise.data.db;
 
 
+import promise.model.Identifiable;
 import promise.model.List;
-import promise.model.S;
 import promise.model.SList;
 
 
 interface Crud<X> {
 
-    <T extends S> Table.Extras<T> read(Table<T, X> table);
+    <T extends Identifiable<Integer>> Table.Extras<T> read(Table<T, X> table);
 
-    <T extends S> SList<T> readAll(Table<T, X> table);
+    <T extends Identifiable<Integer>> SList<T> readAll(Table<T, X> table);
 
-    <T extends S> SList<T> readAll(Table<T, X> table, Column column);
+    <T extends Identifiable<Integer>> SList<T> readAll(Table<T, X> table, Column column);
 
-    <T extends S> boolean update(T t, Table<T, X> table, Column column);
+    <T extends Identifiable<Integer>> boolean update(T t, Table<T, X> table, Column column);
 
-    <T extends S> boolean update(T t, Table<T, X> table);
+    <T extends Identifiable<Integer>> boolean update(T t, Table<T, X> table);
 
-    <T extends S> SList<T> readAll(Table<T, X> table, Column[] columns);
+    <T extends Identifiable<Integer>> SList<T> readAll(Table<T, X> table, Column[] columns);
 
-    <T extends S> Table.Extras<T> read(Table<T, X> table, Column... columns);
+    <T extends Identifiable<Integer>> Table.Extras<T> read(Table<T, X> table, Column... columns);
 
     boolean delete(Table<?, X> table, Column column);
 
-    <T extends S> boolean delete(Table<T, X> table, T t);
+    <T extends Identifiable<Integer>> boolean delete(Table<T, X> table, T t);
 
     boolean delete(Table<?, X> table);
 
     <T> boolean delete(Table<?, X> table, Column<T> column, List<T> list);
 
-    <T extends S> long save(T t, Table<T, X> table);
+    <T extends Identifiable<Integer>> long save(T t, Table<T, X> table);
 
-    <T extends S> boolean save(SList<T> list, Table<T, X> table);
+    <T extends Identifiable<Integer>> boolean save(SList<T> list, Table<T, X> table);
 
     boolean deleteAll();
 

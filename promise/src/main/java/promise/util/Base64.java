@@ -17,7 +17,7 @@ package promise.util;
 
 public class Base64 {
 
-  /* ********  P U B L I C   F I E L D S  ******** */
+  /* ********  P U B L I C   F I E L D Identifiable  ******** */
 
 
   /**
@@ -71,7 +71,7 @@ public class Base64 {
   public final static int ORDERED = 32;
 
 
-  /* ********  P R I V A T E   F I E L D S  ******** */
+  /* ********  P R I V A T E   F I E L D Identifiable  ******** */
 
 
   /**
@@ -102,7 +102,7 @@ public class Base64 {
   private final static byte EQUALS_SIGN_ENC = -1; // Indicates equals sign in encoding
 
 
-  /* ********  S T A N D A R D   B A S E 6 4   A L P H A B E T  ******** */
+  /* ********  Identifiable T A N D A R D   B A Identifiable E 6 4   A L P H A B E T  ******** */
 
   /**
    * The 64 valid Base64 values.
@@ -161,7 +161,7 @@ public class Base64 {
   };
 
 
-  /* ********  U R L   S A F E   B A S E 6 4   A L P H A B E T  ******** */
+  /* ********  U R L   Identifiable A F E   B A Identifiable E 6 4   A L P H A B E T  ******** */
 
   /**
    * Used in the URL- and Filename-safe dialect described in Section 4 of RFC3548:
@@ -224,7 +224,7 @@ public class Base64 {
 
 
 
-  /* ********  O R D E R E D   B A S E 6 4   A L P H A B E T  ******** */
+  /* ********  O R D E R E D   B A Identifiable E 6 4   A L P H A B E T  ******** */
 
   /**
    * I don't get the point of this technique, but someone requested it,
@@ -328,7 +328,7 @@ public class Base64 {
 
 
 
-  /* ********  E N C O D I N G   M E T H O D S  ******** */
+  /* ********  E N C O D I N G   M E T H O D Identifiable  ******** */
 
 
   /**
@@ -877,7 +877,7 @@ public class Base64 {
 
 
 
-  /* ********  D E C O D I N G   M E T H O D S  ******** */
+  /* ********  D E C O D I N G   M E T H O D Identifiable  ******** */
 
 
   /**
@@ -1511,7 +1511,7 @@ public class Base64 {
   }   // end decodeFileToFile
 
 
-  /* ********  I N N E R   C L A S S   I N P U T S T R E A M  ******** */
+  /* ********  I N N E R   C L A Identifiable Identifiable   I N P U T Identifiable T R E A M  ******** */
 
 
   /**
@@ -1711,7 +1711,7 @@ public class Base64 {
 
 
 
-  /* ********  I N N E R   C L A S S   O U T P U T S T R E A M  ******** */
+  /* ********  I N N E R   C L A Identifiable Identifiable   O U T P U T Identifiable T R E A M  ******** */
 
 
   /**

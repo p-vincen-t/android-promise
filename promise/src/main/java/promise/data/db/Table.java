@@ -17,12 +17,13 @@ package promise.data.db;
 
 
 import androidx.annotation.Nullable;
+
+import promise.model.Identifiable;
 import promise.model.List;
-import promise.model.S;
 import promise.model.SList;
 
 
-public interface Table<T extends S, X> {
+public interface Table<T extends Identifiable<Integer>, X> {
     boolean onCreate(X x) throws ModelError;
     boolean onUpgrade(X x, int v1, int v2) throws ModelError;
 
@@ -61,7 +62,7 @@ public interface Table<T extends S, X> {
 
     String getName();
 
-    interface Extras<T extends S> {
+    interface Extras<T extends Identifiable<Integer>> {
         @Nullable
         T first();
         @Nullable T last();

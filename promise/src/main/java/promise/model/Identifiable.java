@@ -15,7 +15,7 @@
 
 package promise.model;
 
-public interface S {
-    void id(int id);
-    int id();
+public interface Identifiable<T> {
+    void id(T id);
+    T id();
 }

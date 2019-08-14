@@ -1,14 +1,13 @@
 package promise.repo
 
 import promise.model.List
-import promise.model.S
 
 /**
- *
- *
- * @param T
+ * abstract implementation of sync data store
+ * interacts with data sources on a synchronous manner
+ * @param T must implement Identifiable so it can have a reference id
  */
-interface SyncIDataStore<T : S> {
+interface SyncIDataStore<T> {
   /**
    *
    *
@@ -16,7 +15,7 @@ interface SyncIDataStore<T : S> {
    * @return
    */
   @Throws(Exception::class)
-  fun all(args: Map<String, Any?>? = null): List<T>?
+  fun all(args: Map<String, Any?>? = null): Pair<List<T>?, Any?>
 
   /**
    *
@@ -25,7 +24,7 @@ interface SyncIDataStore<T : S> {
    * @return
    */
   @Throws(Exception::class)
-  fun one(args: Map<String, Any?>? = null): T?
+  fun one(args: Map<String, Any?>? = null): Pair<T?, Any?>
 
   /**
    *
@@ -103,14 +102,14 @@ interface SyncIDataStore<T : S> {
  *
  * @param T
  */
-open class AbstractSyncIDataStore<T : S> : SyncIDataStore<T> {
+open class AbstractSyncIDataStore<T>: SyncIDataStore<T> {
   /**
    *
    *
    * @param args
    * @return
    */
-  override fun all(args: Map<String, Any?>?): List<T>? = List()
+  override fun all(args: Map<String, Any?>?): Pair<List<T>?, Any?> = Pair(List(), Any())
 
   /**
    *
@@ -118,7 +117,7 @@ open class AbstractSyncIDataStore<T : S> : SyncIDataStore<T> {
    * @param args
    * @return
    */
-  override fun one(args: Map<String, Any?>?): T? = null
+  override fun one(args: Map<String, Any?>?): Pair<T?, Any?> = Pair(null, Any())
 
   /**
    *
@@ -136,7 +135,7 @@ open class AbstractSyncIDataStore<T : S> : SyncIDataStore<T> {
    * @param args
    * @return
    */
-  override fun save(t: List<T>, args: Map<String, Any?>?): Any = Any()
+  override fun save(t: List<T>, args: Map<String, Any?>?): Any? = Any()
 
   /**
    *
@@ -154,7 +153,7 @@ open class AbstractSyncIDataStore<T : S> : SyncIDataStore<T> {
    * @param args
    * @return
    */
-  override fun update(t: List<T>, args: Map<String, Any?>?): Any = Any()
+  override fun update(t: List<T>, args: Map<String, Any?>?): Any? = Any()
 
   /**
    *

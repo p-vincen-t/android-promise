@@ -22,7 +22,7 @@ import android.os.Parcelable;
  * Created on 4/12/18 by yoctopus.
  */
 
-public abstract class SModel implements S, Parcelable {
+public abstract class SModel implements Identifiable<Integer>, Parcelable {
     private int id = 0;
     private long createdAt, updatedAt;
 
@@ -43,12 +43,12 @@ public abstract class SModel implements S, Parcelable {
     }
 
     @Override
-    public void id(int id) {
+    public void id(Integer id) {
         this.id = id;
     }
 
     @Override
-    public int id() {
+    public Integer id() {
         return id;
     }
 

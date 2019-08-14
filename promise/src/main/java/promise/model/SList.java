@@ -17,11 +17,10 @@ package promise.model;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 
 import androidx.annotation.Nullable;
 
-public class SList<T extends S> extends List<T> {
+public class SList<T extends Identifiable<Integer>> extends List<T> {
     public SList(Collection<? extends T> c) {
         super(c);
     }

@@ -24,14 +24,13 @@ import java.util.concurrent.Callable;
 import androidx.annotation.Nullable;
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
-import io.reactivex.MaybeObserver;
 import io.reactivex.MaybeSource;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 import promise.Promise;
 import promise.data.utils.Converter;
+import promise.model.Identifiable;
 import promise.model.List;
-import promise.model.S;
 import promise.model.SList;
 import promise.model.SModel;
 
@@ -225,7 +224,7 @@ public abstract class ReactiveModel<T extends SModel>
     return table.getWithId(cursor);
   }
 
-  private abstract class QueryExtras<Q extends S> implements ReactiveModel.Extras<Q>, Converter<Q, Cursor, ContentValues> {
+  private abstract class QueryExtras<Q extends Identifiable<Integer>> implements ReactiveModel.Extras<Q>, Converter<Q, Cursor, ContentValues> {
 
     private SQLiteDatabase database;
 
@@ -337,7 +336,7 @@ public abstract class ReactiveModel<T extends SModel>
     }
   }
 
-  private abstract class QueryExtras2<U extends S> extends QueryExtras<U> {
+  private abstract class QueryExtras2<U extends Identifiable<Integer>> extends QueryExtras<U> {
     private Column[] columns;
 
     QueryExtras2(SQLiteDatabase database, Column[] columns) {

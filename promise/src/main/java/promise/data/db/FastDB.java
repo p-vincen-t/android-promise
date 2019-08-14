@@ -25,12 +25,11 @@ import android.os.Build;
 
 import java.util.Arrays;
 
-import promise.BuildConfig;
 import promise.Promise;
 import promise.data.db.query.QueryBuilder;
 import promise.data.log.LogUtil;
+import promise.model.Identifiable;
 import promise.model.List;
-import promise.model.S;
 import promise.model.SList;
 import promise.util.Conditions;
 
@@ -183,42 +182,42 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   @Override
-  public <T extends S> Table.Extras<T> read(Table<T, SQLiteDatabase> table) {
+  public <T extends Identifiable<Integer>> Table.Extras<T> read(Table<T, SQLiteDatabase> table) {
     return checkTableExist(table).read(getReadableDatabase());
   }
 
   @Override
-  public <T extends S> Table.Extras<T> read(Table<T, SQLiteDatabase> table, Column... columns) {
+  public <T extends Identifiable<Integer>> Table.Extras<T> read(Table<T, SQLiteDatabase> table, Column... columns) {
     return checkTableExist(table).read(getReadableDatabase(), columns);
   }
 
   @Override
-  public <T extends S> SList<T> readAll(Table<T, SQLiteDatabase> table) {
+  public <T extends Identifiable<Integer>> SList<T> readAll(Table<T, SQLiteDatabase> table) {
     return checkTableExist(table).onReadAll(getReadableDatabase(), true);
   }
 
   @Override
-  public <T extends S> SList<T> readAll(Table<T, SQLiteDatabase> table, Column column) {
+  public <T extends Identifiable<Integer>> SList<T> readAll(Table<T, SQLiteDatabase> table, Column column) {
     return checkTableExist(table).onReadAll(getReadableDatabase(), column);
   }
 
   @Override
-  public <T extends S> boolean update(T t, Table<T, SQLiteDatabase> table) {
+  public <T extends Identifiable<Integer>> boolean update(T t, Table<T, SQLiteDatabase> table) {
     return checkTableExist(table).onUpdate(t, getWritableDatabase());
   }
 
   @Override
-  public <T extends S> boolean update(T t, Table<T, SQLiteDatabase> table, Column column) {
+  public <T extends Identifiable<Integer>> boolean update(T t, Table<T, SQLiteDatabase> table, Column column) {
     return checkTableExist(table).onUpdate(t, getWritableDatabase(), column);
   }
 
   @Override
-  public <T extends S> SList<T> readAll(Table<T, SQLiteDatabase> table, Column[] columns) {
+  public <T extends Identifiable<Integer>> SList<T> readAll(Table<T, SQLiteDatabase> table, Column[] columns) {
     return checkTableExist(table).onReadAll(getReadableDatabase(), columns);
   }
 
   @Override
-  public <T extends S> boolean delete(Table<T, SQLiteDatabase> table, T t) {
+  public <T extends Identifiable<Integer>> boolean delete(Table<T, SQLiteDatabase> table, T t) {
     return checkTableExist(table).onDelete(t, getWritableDatabase());
   }
 
@@ -245,12 +244,12 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   @Override
-  public <T extends S> long save(T t, Table<T, SQLiteDatabase> table) {
+  public <T extends Identifiable<Integer>> long save(T t, Table<T, SQLiteDatabase> table) {
     return checkTableExist(table).onSave(t, getWritableDatabase());
   }
 
   @Override
-  public <T extends S> boolean save(SList<T> list, Table<T, SQLiteDatabase> table) {
+  public <T extends Identifiable<Integer>> boolean save(SList<T> list, Table<T, SQLiteDatabase> table) {
     return checkTableExist(table).onSave(list, getWritableDatabase(), true);
   }
 
@@ -273,7 +272,7 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
     return context;
   }
 
-  private <T extends S> Table<T, SQLiteDatabase> checkTableExist(Table<T, SQLiteDatabase> table) {
+  private <T extends Identifiable<Integer>> Table<T, SQLiteDatabase> checkTableExist(Table<T, SQLiteDatabase> table) {
     return Conditions.checkNotNull(table);
     /*synchronized (this) {
         IndexCreated indexCreated = getIndexCreated(table);
