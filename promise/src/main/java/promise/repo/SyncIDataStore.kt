@@ -181,3 +181,5 @@ open class AbstractSyncIDataStore<T>: SyncIDataStore<T> {
    */
   override fun clear(args: Map<String, Any?>?): Any? = Any()
 }
+
+class DefaultSyncStore: AbstractSyncIDataStore<Any>()

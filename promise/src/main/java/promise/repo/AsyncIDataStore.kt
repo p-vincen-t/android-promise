@@ -202,3 +202,5 @@ open class AbstractAsyncIDataStore<T> : AsyncIDataStore<T> {
   override fun clear(res: (Any?) -> Unit, err: ((Exception) -> Unit)?, args: Map<String, Any?>?) =
       res(Any())
 }
+
+class DefaultAsyncStore: AbstractAsyncIDataStore<Any>()

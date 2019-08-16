@@ -302,14 +302,17 @@ class StoreRepository<T>(private val store: StoreHelper<T>) {
      */
     inline fun <reified T> of(syncClass: KClass<out SyncIDataStore<T>>, asyncClass: KClass<out AsyncIDataStore<T>>, syncArgs: Array<out Any>? = null, asyncArgs: Array<out Any>? = null) =
         create(object : Injector<SyncIDataStore<T>> {
-          override fun inject(): SyncIDataStore<T> {
-            return createInstance(syncClass, syncArgs)
-          }
+          override fun inject(): SyncIDataStore<T> = createInstance(syncClass, syncArgs)
         }, object : Injector<AsyncIDataStore<T>> {
-          override fun inject(): AsyncIDataStore<T> {
-            return createInstance(asyncClass, asyncArgs)
-          }
+          override fun inject(): AsyncIDataStore<T> = createInstance(asyncClass, asyncArgs)
         })
+
+    /**
+     * creates a default repository
+     *
+     * @return a default repository
+     */
+    fun ofDefault(): StoreRepository<Any> = of(DefaultSyncStore::class, DefaultAsyncStore::class)
 
     /**
      * clear all the cached stores from the repo
