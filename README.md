@@ -1,5 +1,7 @@
 # Android Promise
-- [v1.0.8]
+- [![Release](https://jitpack.io/v/dev4vin/android-promise.svg)]
+  (https://jitpack.io/#dev4vin/android-promise)
+  
 Easily interacting with sqlite database, make http requests, store shared preferences, log to console, list with recyclerview, multithreading
 
 - Please read also [issues](https://github.com/dev4vin/android-promise/issues) 
@@ -26,7 +28,7 @@ allprojects {
 
 
 dependencies {
-     implementation 'com.github.dev4vin:android-promise:1.0.8'
+     implementation 'com.github.dev4vin:android-promise:TAG'
 }
 ```
 
@@ -38,7 +40,7 @@ Initialize Promise in your main application file, entry point
   @Override
   public void onCreate() {
     super.onCreate();
-    Promise.init(this).threads(100);
+    Promise.init(this, 100);
   }
 ```
 #### Stay Updated
