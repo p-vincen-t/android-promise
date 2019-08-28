@@ -9,12 +9,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.javafaker.Faker
 import kotlinx.android.synthetic.main.activity_search.*
-import promise.Promise
+import dev4vin.promise.Promise
 import promise.app.R
 import promise.app.models.SearchableItem
-import promise.model.List
-import promise.model.ResponseCallBack
-import promise.view.SearchableAdapter
+import dev4vin.promise.model.List
+import dev4vin.promise.model.ResponseCallBack
+import dev4vin.promise.view.SearchableAdapter
 
 class SearchActivity : AppCompatActivity() {
 
@@ -33,7 +33,7 @@ class SearchActivity : AppCompatActivity() {
     search_recyclerView.adapter = searchableAdapter
     Promise.instance().execute({ someSearchItems() },
         ResponseCallBack<List<SearchableItem>, Throwable>()
-        .response {
+        .withCallback {
           Promise.instance().executeOnUi {
             searchableAdapter.add(it)
           }

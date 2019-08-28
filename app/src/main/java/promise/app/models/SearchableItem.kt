@@ -3,8 +3,8 @@ package promise.app.models
 import android.view.View
 import android.widget.TextView
 import promise.app.R
-import promise.data.log.LogUtil
-import promise.model.Searchable
+import dev4vin.promise.data.log.LogUtil
+import dev4vin.promise.model.Searchable
 import android.text.Spannable
 import android.text.style.ForegroundColorSpan
 import android.text.SpannableString

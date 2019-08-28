@@ -44,10 +44,10 @@ dependencies {
     implementation 'eu.davidea:flexible-adapter-databinding:1.0.0'
 
     testImplementation 'com.squareup.assertj:assertj-android:1.1.0'
-    testImplementation 'org.robolectric:robolectric:3.1'
+    /*testImplementation 'org.robolectric:robolectric:3.1'
     testImplementation('org.robolectric:shadows-support-v4:3.0') {
         exclude module: 'support-v4'
-    }
+    }*/
     testImplementation 'org.mockito:mockito-all:1.10.19'
     testImplementation 'net.javacrumbs.json-unit:json-unit-fluent:1.5.6'
     testImplementation 'com.squareup.assertj:assertj-android-recyclerview-v7:1.1.0@aar'

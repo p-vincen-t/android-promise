@@ -2,15 +2,14 @@ package promise.app;
 
 import android.app.Application;
 
-import promise.Promise;
+import dev4vin.promise.Promise;
 
 public class App extends Application {
 
   @Override
   public void onCreate() {
     super.onCreate();
-    Promise.init(this).threads(100);
-
+    Promise.init(this, 100);
   }
 
 }
