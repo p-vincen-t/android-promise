@@ -1,5 +1,6 @@
 # Android Promise
-- [[Release](https://jitpack.io/v/dev4vin/android-promise.svg)]
+
+[![Release](https://jitpack.io/v/dev4vin/android-promise.svg)](https://jitpack.io/#dev4vin/android-promise)
   
 Easily interacting with sqlite database, make http requests, store shared preferences, log to console, list with recyclerview, multithreading
 
