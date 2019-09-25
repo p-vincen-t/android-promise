@@ -2,11 +2,16 @@ package promise.app.mock
 
 import androidx.collection.ArrayMap
 import com.github.javafaker.Faker
+import dev4vin.promise.SingletonInstanceProvider
 import dev4vin.promise.model.List
 import dev4vin.promise.repo.AbstractAsyncIDataStore
 import dev4vin.promise.repo.AbstractSyncIDataStore
 import dev4vin.promise.repo.StoreRepository
+import promise.app.storage.MockDatabase
+import promise.app.storage.MockDatabaseProvider
 import dev4vin.promise.PromiseCallback as Promise
+
+val mockDatabase: MockDatabase = MockDatabaseProvider.instance()
 
 class AsyncMockRepo : AbstractAsyncIDataStore<MockObject>() {
   private fun someSearchItems(number:Int): List<MockObject> {

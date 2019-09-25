@@ -32,11 +32,7 @@ public interface Table<T extends Identifiable<Integer>, X> {
 
   SList<? extends T> onReadAll(X x, boolean close);
 
-  SList<? extends T> onReadAll(X x, Column column);
-
   SList<? extends T> onReadAll(X x, Column... column);
-
-  Extras<T> read(X x, Column... column);
 
   boolean onUpdate(T t, X x, Column column) throws ModelError;
 

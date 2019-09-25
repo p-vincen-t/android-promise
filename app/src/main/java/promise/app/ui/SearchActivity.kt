@@ -5,27 +5,21 @@ import android.text.TextUtils
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.core.util.Pair
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev4vin.promise.IntermediateResult
 import dev4vin.promise.Promise
 import dev4vin.promise.data.log.LogUtil
-import dev4vin.promise.tx.Tx
-import dev4vin.promise.tx.TxManager
 import dev4vin.promise.view.SearchableAdapter
-import dev4vin.promise.view.loading.LoadingViewable
 import kotlinx.android.synthetic.main.activity_search.*
 import promise.app.R
 import promise.app.mock.MockObject
 import promise.app.mock.MockRepo
-import promise.app.mock.mockRepoStore
 import promise.app.models.SearchableItem
 
 class SearchActivity : AppCompatActivity() {
 
   private lateinit var searchableAdapter: SearchableAdapter<SearchableItem>
-
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -49,11 +43,12 @@ class SearchActivity : AppCompatActivity() {
             }
           }
 
-      *//**
-       * gets the callback methods used for executing the transaction
-       *
-       * @return a callbacks object
-       *//*
+      */
+    /**
+     * gets the callback methods used for executing the transaction
+     *
+     * @return a callbacks object
+     *//*
       override fun getCallBackExecutor(): CallBackExecutor<MockObject, Int> {
         return CallBackExecutor {
 
@@ -67,7 +62,7 @@ class SearchActivity : AppCompatActivity() {
           .then { list, any ->
             Promise.instance().executeOnUi {
               if (any is String) {
-                title = any + "(" + list.size + ")"
+                title = any + " (" + list.size + ")"
               }
             }
             IntermediateResult(list, any)

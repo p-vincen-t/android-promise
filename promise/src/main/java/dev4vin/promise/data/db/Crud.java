@@ -35,14 +35,9 @@ interface Crud<X> {
 
     <T extends Identifiable<Integer>> SList<? extends T> readAll(Table<T, ? super X> table, Column[] columns);
 
-    <T extends Identifiable<Integer>> Table.Extras<T> read(Table<T, ? super X> table, Column... columns);
-
     boolean delete(Table<?, ? super X> table, Column column);
 
     <T extends Identifiable<Integer>> boolean delete(Table<T, ? super X> table, T t);
-
-    boolean delete(Table<?, ? super X> table);
-
     <T> boolean delete(Table<?, ? super X> table, Column<? extends T> column, List<? extends T> list);
 
     <T extends Identifiable<Integer>> long save(T t, Table<T, ? super X> table);
