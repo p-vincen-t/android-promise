@@ -128,7 +128,7 @@ public abstract class Model<T extends SModel>
    * @throws ModelError if theirs a query withErrorCallback
    */
   @Override
-  public final boolean onCreate(SQLiteDatabase database) throws ModelError {
+  public boolean onCreate(SQLiteDatabase database) throws ModelError {
     String sql = CREATE_PREFIX;
     /*
      * add the opening braces after select prefix, see {@link Model#CREATE_PREFIX}

@@ -16,7 +16,6 @@ import promise.app.R
 import promise.app.mock.MockObject
 import promise.app.mock.MockRepo
 import promise.app.models.SearchableItem
-import java.lang.IllegalStateException
 
 class SearchActivity : AppCompatActivity() {
 
@@ -36,24 +35,18 @@ class SearchActivity : AppCompatActivity() {
     search_recyclerView.adapter = searchableAdapter
     Promise.instance().execute {
       MockRepo().getMockObjects(50)
-          .then { list, args ->
-            IntermediateResult(list, args)
-          }.then { list, any ->
-
-            IntermediateResult(list, any)
-          }
           .then { list, any ->
-            /*searchableAdapter.add(list.map {
-              SearchableItem(it.string)
-            })*/
-            IntermediateResult(list, any)
-          }
-          .then { _, any ->
             Promise.instance().executeOnUi {
               if (any is String) {
                 title = any
               }
             }
+            IntermediateResult(list, any)
+          }
+          .then { list, _ ->
+            searchableAdapter.add(list.map {
+              SearchableItem((it as MockObject).string)
+            })
             null
           }.error {
             LogUtil.e(TAG, " error ", it)
@@ -62,14 +55,6 @@ class SearchActivity : AppCompatActivity() {
           .execute()
     }
 
-
-    /* Promise.instance().execute({ someSearchItems() },
-         ResponseCallBack<List<SearchableItem>, Throwable>()
-             .withCallback {
-               Promise.instance().executeOnUi {
-
-               }
-             })*/
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -80,11 +65,8 @@ class SearchActivity : AppCompatActivity() {
     searchView.queryHint = getString(R.string.searching)
     searchView.setOnQueryTextListener(
         object : SearchView.OnQueryTextListener {
-
           override fun onQueryTextSubmit(s: String): Boolean {
-            Promise.instance().executeOnUi {
-              searchableAdapter.search(s)
-            }
+            searchableAdapter.search(s)
             return true
           }
 

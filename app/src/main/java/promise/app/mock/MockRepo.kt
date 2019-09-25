@@ -1,19 +1,18 @@
 package promise.app.mock
 
 import com.github.javafaker.Faker
-import dev4vin.promise.PromiseCallback
 import dev4vin.promise.model.List
+import dev4vin.promise.PromiseCallback as Promise
 
 class MockRepo {
-  fun getMockObjects(numberOfMocks: Int): PromiseCallback<List<Any>> =
-      PromiseCallback { resolve, _ ->
-        val mocks = List<Any>()
-        for (i in 0 until numberOfMocks) {
-          mocks.add(MockObject(i, randomName()))
-        }
-        mocks.addAll(someSearchItems())
-        resolve(mocks, "Mock objects")
-      }
+  fun getMockObjects(numberOfMocks: Int): Promise<List<Any>> = Promise { resolve, _ ->
+  val mocks = List<Any>()
+  for (i in 0 until numberOfMocks) {
+    mocks.add(MockObject(i, randomName()))
+  }
+  mocks.addAll(someSearchItems())
+  resolve(mocks.shuffled(), "Mock objects")
+}
 
   private fun randomName(): String {
     val allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz"

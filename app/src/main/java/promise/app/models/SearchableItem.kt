@@ -1,5 +1,6 @@
 package promise.app.models
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.widget.TextView
 import promise.app.R
@@ -14,6 +15,7 @@ import android.graphics.Color
 class SearchableItem(private val item: String) : Searchable {
   private val TAG = LogUtil.makeTag(SearchableItem::class.java)
 
+  @SuppressLint("DefaultLocale")
   override fun onSearch(query: String): Boolean {
     if (item.toLowerCase().contains(query.toLowerCase())) {
       val spannable = SpannableString(item)
