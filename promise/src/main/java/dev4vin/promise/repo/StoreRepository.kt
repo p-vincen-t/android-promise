@@ -300,7 +300,7 @@ class StoreRepository<T>(private val store: StoreHelper<T>) {
      * @param asyncArgs constructor arguments for asynchronous store class
      * @return a storeRepository instance
      */
-    inline fun <reified T> of(syncClass: KClass<out SyncIDataStore<T>>, asyncClass: KClass<out AsyncIDataStore<T>>, syncArgs: Array<out Any>? = null, asyncArgs: Array<out Any>? = null) =
+    inline fun <reified T, SYNC_CLASS : SyncIDataStore<T>, ASYNC_CLASS : AsyncIDataStore<T>> of(syncClass: KClass<SYNC_CLASS>, asyncClass: KClass<ASYNC_CLASS>, syncArgs: Array<out Any>? = null, asyncArgs: Array<out Any>? = null) =
         create(object : Injector<SyncIDataStore<T>> {
           override fun inject(): SyncIDataStore<T> = createInstance(syncClass, syncArgs)
         }, object : Injector<AsyncIDataStore<T>> {

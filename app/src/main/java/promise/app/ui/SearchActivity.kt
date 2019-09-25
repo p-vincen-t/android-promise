@@ -5,16 +5,21 @@ import android.text.TextUtils
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.util.Pair
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev4vin.promise.IntermediateResult
 import dev4vin.promise.Promise
 import dev4vin.promise.data.log.LogUtil
+import dev4vin.promise.tx.Tx
+import dev4vin.promise.tx.TxManager
 import dev4vin.promise.view.SearchableAdapter
+import dev4vin.promise.view.loading.LoadingViewable
 import kotlinx.android.synthetic.main.activity_search.*
 import promise.app.R
 import promise.app.mock.MockObject
 import promise.app.mock.MockRepo
+import promise.app.mock.mockRepoStore
 import promise.app.models.SearchableItem
 
 class SearchActivity : AppCompatActivity() {
@@ -33,17 +38,44 @@ class SearchActivity : AppCompatActivity() {
     search_recyclerView.layoutManager = LinearLayoutManager(this)
     search_recyclerView.itemAnimator = DefaultItemAnimator()
     search_recyclerView.adapter = searchableAdapter
+    loading_view.showLoading()
+    /*TxManager.instance().execute(object: Tx<MockObject, String, Int>() {
+      override fun getProgress(): Progress<MockObject, String> =
+          object: Progress<MockObject, String> {
+            override fun onCalculateProgress(t: MockObject): String = t.string
+
+            override fun onProgress(x: String) {
+              title = x
+            }
+          }
+
+      *//**
+       * gets the callback methods used for executing the transaction
+       *
+       * @return a callbacks object
+       *//*
+      override fun getCallBackExecutor(): CallBackExecutor<MockObject, Int> {
+        return CallBackExecutor {
+
+        }
+      }
+    }.complete {
+
+    }, Pair(arrayOf(10, 20, 30, 40), 0))*/
     Promise.instance().execute {
-      MockRepo().getMockObjects(50)
+      MockRepo().getMockObjects(100)
           .then { list, any ->
             Promise.instance().executeOnUi {
               if (any is String) {
-                title = any
+                title = any + "(" + list.size + ")"
               }
             }
             IntermediateResult(list, any)
           }
           .then { list, _ ->
+            Promise.instance().executeOnUi {
+              loading_view.showContent()
+            }
             searchableAdapter.add(list.map {
               SearchableItem((it as MockObject).string)
             })

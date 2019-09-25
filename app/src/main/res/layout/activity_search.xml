@@ -6,11 +6,18 @@
     android:layout_height="match_parent"
     tools:context="promise.app.ui.SearchActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:id="@+id/search_recyclerView"
+    <dev4vin.promise.view.loading.ProgressLayout
+        android:id="@+id/loading_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </dev4vin.promise.view.loading.ProgressLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
