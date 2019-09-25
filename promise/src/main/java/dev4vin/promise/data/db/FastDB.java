@@ -26,7 +26,6 @@ import android.os.Build;
 import java.util.Arrays;
 
 import dev4vin.promise.Promise;
-import dev4vin.promise.Promise;
 import dev4vin.promise.data.db.query.QueryBuilder;
 import dev4vin.promise.data.log.LogUtil;
 import dev4vin.promise.model.Identifiable;
@@ -35,26 +34,26 @@ import dev4vin.promise.model.SList;
 import dev4vin.promise.util.Conditions;
 
 /**
- *
+ * Fast db database, easier access to SQLite database
+ * @see Crud
  */
 public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteDatabase> {
   /**
-   *
+   * the default name of the database
    */
   private static final String DEFAULT_NAME = "fast";
   /*private static Map<IndexCreated, Table<?, SQLiteDatabase>> indexCreatedTableHashMap;*/
   private String TAG = LogUtil.makeTag(FastDB.class);
   /**
-   *
+   * database context
    */
   private Context context;
 
   /**
-   *
-   * @param name
-   * @param factory
-   * @param version
-   * @param errorHandler
+   * @param name database identifier
+   * @param factory factory for database cursor
+   * @param version version number of the database
+   * @param errorHandler handles errors from the database
    */
   private FastDB(
       String name,
@@ -68,11 +67,10 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param name
-   * @param version
-   * @param cursorListener
-   * @param listener
+   * @param name database identifier
+   * @param version version number of the database
+   * @param cursorListener for logging query statements
+   * @param listener corruption listener
    */
   @TargetApi(Build.VERSION_CODES.HONEYCOMB)
   public FastDB(String name, int version, final FastDbCursorFactory.Listener cursorListener, final Corrupt listener) {
@@ -87,11 +85,10 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param version
+   * @param version version of the database
    */
   public FastDB(int version) {
-    this(DEFAULT_NAME, version, null,null);
+    this(DEFAULT_NAME, version, null, null);
   }
 
   /*private void initTables() {
@@ -102,8 +99,7 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }*/
 
   /**
-   *
-   * @param db
+   * @param db new database instance
    */
   @Override
   public final void onCreate(SQLiteDatabase db) {
@@ -111,10 +107,9 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param database
-   * @param oldVersion
-   * @param newVersion
+   * @param database current database
+   * @param oldVersion old version number of the database
+   * @param newVersion new version number of the database
    */
   @Override
   public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
@@ -126,40 +121,39 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param database
-   * @param oldVersion
-   * @param newVersion
-   * @return
+   * checks if the database should do upgrades to its tables
+   * @param database current database
+   * @param oldVersion old database version
+   * @param newVersion new database version
+   * @return flag to upgrade database
    */
   public abstract boolean shouldUpgrade(SQLiteDatabase database, int oldVersion, int newVersion);
 
   /**
-   *
-   * @return
+   * gets the name of the database
+   * @return name of the database
    */
   public String name() {
     return this.getDatabaseName();
   }
 
   /**
-   *
-   * @return
+   * gets all the tables to be added to this database
+   * @return a list of tables
    */
   public abstract List<Table<?, ? super SQLiteDatabase>> tables();
 
   /**
-   *
-   * @param database
+   * creates the database structure
+   * loops all the tables creating each one
+   * @param database database to be structured
    */
   private void create(SQLiteDatabase database) {
     boolean created = true;
-
-    for (Table<?, ? super SQLiteDatabase> table: Conditions.checkNotNull(tables())) {
+    for (Table<?, ? super SQLiteDatabase> table : Conditions.checkNotNull(tables())) {
       try {
         created = created && create(table, database);
-      }
-      catch (DBError dbError) {
+      } catch (DBError dbError) {
         LogUtil.e(TAG, dbError);
         return;
       }
@@ -167,13 +161,13 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param database
-   * @param v1
-   * @param v2
+   * upgrades the database from one version to the next
+   * @param database database to be upgraded
+   * @param v1 old version
+   * @param v2 new version
    */
   private void upgrade(SQLiteDatabase database, int v1, int v2) {
-    for (Table<?, ? super SQLiteDatabase> table: Conditions.checkNotNull(tables())) {
+    for (Table<?, ? super SQLiteDatabase> table : Conditions.checkNotNull(tables())) {
       try {
         if ((v2 - v1) == 1) checkTableExist(table).onUpgrade(database, v1, v2);
         else {
@@ -191,10 +185,10 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param database
-   * @param tables
-   * @return
+   * adda a table to the existing database
+   * @param database current database
+   * @param tables tables to be added
+   * @return true if tables are added successfully else false
    */
   @SafeVarargs
   public final boolean add(SQLiteDatabase database, Table<?, ? super SQLiteDatabase>... tables) {
@@ -211,30 +205,31 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param database
-   * @return
+   * removes table from the database
+    * @param database current database
+   * @param tables tables to be removed
+   * @return true if tables are dropped else false
    */
-  private boolean drop(SQLiteDatabase database) {
-    boolean dropped = true;
-    /*for (Map.Entry<IndexCreated, Table<?, SQLiteDatabase>> entry :
-        indexCreatedTableHashMap.entrySet()) {
+  @SafeVarargs
+  public final boolean drop(SQLiteDatabase database, Table<?, ? super SQLiteDatabase>... tables) {
+    boolean created = true;
+    for (Table<?, ? super SQLiteDatabase> table : tables) {
       try {
-        dropped = dropped && drop(checkTableExist(entry.getValue()), database);
+        created = created && drop(table, database);
       } catch (DBError dbError) {
-        dbError.printStackTrace();
+        LogUtil.e(TAG, dbError);
         return false;
       }
-    }*/
-    return dropped;
+    }
+    return created;
   }
 
   /**
-   *
-   * @param table
-   * @param database
-   * @return
-   * @throws DBError
+   * creates a table in the database
+   * @param table table to be created
+   * @param database current database
+   * @return true if table created else false
+   * @throws DBError if table not created
    */
   private boolean create(Table<?, ? super SQLiteDatabase> table, SQLiteDatabase database) throws DBError {
     try {
@@ -246,11 +241,11 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param table
-   * @param database
-   * @return
-   * @throws DBError
+   * drops a table from the database
+   * @param table table to be dropped
+   * @param database current database
+   * @return true if table is dropped
+   * @throws DBError if table could not be dropped
    */
   private boolean drop(Table<?, ? super SQLiteDatabase> table, SQLiteDatabase database) throws DBError {
     try {
@@ -262,22 +257,22 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param builder
-   * @return
+   * queries the database for more read options not present in the models
+   * @param builder contains query statements
+   * @return a cursor for the fetched data
    */
   public Cursor query(QueryBuilder builder) {
     String sql = builder.build();
     String[] params = builder.buildParameters();
-    LogUtil.d(TAG, "query: "+ sql, " params: "+ Arrays.toString(params));
+    LogUtil.d(TAG, "query: " + sql, " params: " + Arrays.toString(params));
     return getReadableDatabase().rawQuery(sql, params);
   }
 
   /**
-   *
-   * @param table
-   * @param <T>
-   * @return
+   * reads data in the table
+   * @param table table to be read
+   * @param <T> type of data to be returned
+   * @return an extras instance for more read options
    */
   @Override
   public <T extends Identifiable<Integer>> Table.Extras<T> read(Table<T, ? super SQLiteDatabase> table) {
@@ -285,10 +280,10 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param table
-   * @param <T>
-   * @return
+   * reads all the records in the table
+   * @param table model to be read
+   * @param <T> type of data to be returned
+   * @return a list of records of type T
    */
   @Override
   public <T extends Identifiable<Integer>> SList<? extends T> readAll(Table<T, ? super SQLiteDatabase> table) {
@@ -296,11 +291,11 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param table
-   * @param column
-   * @param <T>
-   * @return
+   * reads all the records fulfilled by the conditions passed in the column
+   * @param table model to read
+   * @param column column to read by
+   * @param <T> type of records
+   * @return a list of records of type T
    */
   @Override
   public <T extends Identifiable<Integer>> SList<? extends T> readAll(Table<T, ? super SQLiteDatabase> table, Column column) {
@@ -308,11 +303,11 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param t
-   * @param table
-   * @param <T>
-   * @return
+   * updates a record in the table
+   * @param t record to update must have {@link Model#id} more than 0
+   * @param table table to update the record in
+   * @param <T> type of t
+   * @return true if updated else false
    */
   @Override
   public <T extends Identifiable<Integer>> boolean update(T t, Table<T, ? super SQLiteDatabase> table) {
@@ -320,12 +315,12 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param t
-   * @param table
-   * @param column
-   * @param <T>
-   * @return
+   * updates the record t with condition in the column
+   * @param t record to update
+   * @param table table to update in
+   * @param column column to check when doing update {@link Column}
+   * @param <T> type or record being updated
+   * @return true if updated else false
    */
   @Override
   public <T extends Identifiable<Integer>> boolean update(T t, Table<T, ? super SQLiteDatabase> table, Column column) {
@@ -338,11 +333,11 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param table
-   * @param columns
-   * @param <T>
-   * @return
+   * reads all the records matching all the conditions in the passed columns
+   * @param table table to read from
+   * @param columns columns to refer conditions
+   * @param <T> type of records read
+   * @return a list of records
    */
   @Override
   public <T extends Identifiable<Integer>> SList<? extends T> readAll(Table<T, ? super SQLiteDatabase> table, Column[] columns) {
@@ -350,11 +345,11 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param table
-   * @param t
-   * @param <T>
-   * @return
+   * deletes the record t from the said table
+   * @param table table to delete from
+   * @param t record to delete must have {@link Model#id} more than 0
+   * @param <T> type of record being deleted
+   * @return true if deleted else false
    */
   @Override
   public <T extends Identifiable<Integer>> boolean delete(Table<T, ? super SQLiteDatabase> table, T t) {
@@ -362,10 +357,10 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param table
-   * @param column
-   * @return
+   * drops the records in the table with conditions in the passed column
+   * @param table table to delete records from
+   * @param column column to refer conditions
+   * @return true if records deleted else false
    */
   @Override
   public boolean delete(Table<?, ? super SQLiteDatabase> table, Column column) {
@@ -373,9 +368,9 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param tables
-   * @return
+   * drops records from the tables passed
+   * @param tables tables to clear records from
+   * @return true if records cleared else false
    */
   @SafeVarargs
   public final boolean delete(Table<?, ? super SQLiteDatabase>... tables) {
@@ -386,12 +381,12 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param table
-   * @param column
-   * @param list
-   * @param <T>
-   * @return
+   * deletes a list of records from the table where the column value matched each of the items in list
+   * @param table table to delete records from
+   * @param column column to refer values from
+   * @param list contains values to match with column
+   * @param <T> type of records being deleted
+   * @return true if records deleted else false
    */
   @Override
   public <T> boolean delete(Table<?, ? super SQLiteDatabase> table, Column<? extends T> column, List<? extends T> list) {
@@ -399,11 +394,11 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param t
-   * @param table
-   * @param <T>
-   * @return
+   * saves a record in the tables
+   * @param t record to be saved
+   * @param table table to save into
+   * @param <T> type of record being saved
+   * @return id of the record saved with reference in the table
    */
   @Override
   public <T extends Identifiable<Integer>> long save(T t, Table<T, ? super SQLiteDatabase> table) {
@@ -411,11 +406,11 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @param list
-   * @param table
-   * @param <T>
-   * @return
+   * saves a list of records in the table
+   * @param list records to save
+   * @param table table to save records into
+   * @param <T> type of records to save
+   * @return true if records saved else false
    */
   @Override
   public <T extends Identifiable<Integer>> boolean save(SList<? extends T> list, Table<T, ? super SQLiteDatabase> table) {
@@ -423,23 +418,23 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @return
+   * deletes all the table from this database
+   * @return true if all tables dropped
    */
   @Override
   public boolean deleteAll() {
     synchronized (FastDB.class) {
       boolean deleted = true;
-      for (Table<?, ? super SQLiteDatabase> table: Conditions.checkNotNull(tables()))
+      for (Table<?, ? super SQLiteDatabase> table : Conditions.checkNotNull(tables()))
         deleted = deleted && delete(checkTableExist(table));
       return deleted;
     }
   }
 
   /**
-   *
-   * @param table
-   * @return
+   * gets the last id of the last record in the table
+   * @param table table to fetch last id
+   * @return the id of the last row in the table
    */
   @Override
   public int getLastId(Table<?, ? super SQLiteDatabase> table) {
@@ -447,18 +442,18 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   /**
-   *
-   * @return
+   * gets the database context
+   * @return context used to create the database
    */
   public Context getContext() {
     return context;
   }
 
   /**
-   *
-   * @param table
-   * @param <T>
-   * @return
+   * is supposed to check if the table exists, if it doesn't, create it
+   * @param  table to check
+   * @param <T> type of records in the table
+   * @return table
    */
   private <T extends Identifiable<Integer>> Table<T, ? super SQLiteDatabase> checkTableExist(Table<T, ? super SQLiteDatabase> table) {
     return Conditions.checkNotNull(table);

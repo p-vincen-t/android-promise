@@ -18,25 +18,25 @@ package dev4vin.promise.model;
 import dev4vin.promise.data.log.LogUtil;
 
 /**
- *
- * @param <T>
- * @param <E>
+ * callback class for passing results of asynchronous operations
+ * @param <T> type of result
+ * @param <E> type of error
  */
 public class ResponseCallBack<T, E extends Throwable> {
     private final String TAG = LogUtil.makeTag(ResponseCallBack.class);
     /**
-     *
+     * the response consumer
      */
     private Response<? super T, ? extends E> response;
     /**
-     *
+     * the error consumer
      */
     private Error<? super E> error;
 
     /**
-     *
-     * @param t
-     * @param <R>
+     * passing the response back to the consumer
+     * @param t response
+     * @param <R> type of response
      */
     public <R extends T> void response(R t) {
         if (response != null) {
@@ -52,9 +52,9 @@ public class ResponseCallBack<T, E extends Throwable> {
     }
 
     /**
-     *
-     * @param response
-     * @return
+     * pass the response consumer
+     * @param response consumer for response
+     * @return response callback with the consumer
      */
     public ResponseCallBack<T, E> withCallback(Response<? super T, ? extends E> response) {
         this.response = response;

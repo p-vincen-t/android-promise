@@ -34,9 +34,7 @@ fun <T> createInstance(clazz: KClass<*>, args: Array<out Any>? = null): T {
   // get all the constructors with parameter size same as number of arguments passed
   val constructors = clazz.constructors.filter { it.parameters.size == args.size }
   // if empty means no constructor can accept the arguments passed
-  if (constructors.isEmpty()) {
-    throw IllegalStateException("no constructor for ${clazz.simpleName} expects ${args.size} arguments")
-  }
+  check(constructors.isNotEmpty()) { "no constructor for ${clazz.simpleName} expects ${args.size} arguments" }
   // get the first constructor matching the arguments length and fail if none found
   // if more than one, only take the first
   val constructor = constructors.firstOrNull { it.parameters.size == args.size }

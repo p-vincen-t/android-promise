@@ -11,10 +11,6 @@ Easily interacting with sqlite database, make http requests, store shared prefer
 * Recycler view adapter with custom layout managers, record swiping, record searching
 * Multithreading with RXAndroid
 
-### Other _experimental_ features
-* Geo location, geo fencing, activity recognition.
-* Websockets and data streaming
-
 # Setup
 - 
 #### build.gradle

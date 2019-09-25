@@ -227,14 +227,8 @@ public class Promise {
    * @param wait
    */
   public void execute(Runnable runnable, long wait) {
-    execute(() -> {
-      try {
-        Thread.sleep(wait);
-        execute(runnable);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-    });
+    ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    scheduler.schedule(runnable, wait, TimeUnit.MICROSECONDS);
   }
 
   /**

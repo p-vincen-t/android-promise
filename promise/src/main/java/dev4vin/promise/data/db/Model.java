@@ -222,6 +222,19 @@ public abstract class Model<T extends SModel>
     return true;
   }
 
+  public final boolean alterColumns(SQLiteDatabase database, Column... columns) throws ModelError {
+    for (Column column : columns) {
+      String alterSql =
+          ALTER_COMMAND + " `" + getName() + "` " + "ALTER COLUMN " + column.getName() + " " +column.getDescription()+";";
+      try {
+        database.execSQL(alterSql);
+      } catch (SQLException e) {
+        throw new ModelError(e);
+      }
+    }
+    return true;
+  }
+
   /**
    * more verbose read operation against the database
    *

@@ -60,8 +60,7 @@ class SingletonInstanceProvider<out T> private constructor(provider: InstancePro
      */
     @JvmStatic
     fun <T, P : InstanceProvider<T>> provider(provider: P): InstanceProvider<T> =
-        provider as? SingletonInstanceProvider<T>
-            ?: SingletonInstanceProvider(provider)
+        provider as? SingletonInstanceProvider<T> ?: SingletonInstanceProvider(provider)
   }
 
   /**

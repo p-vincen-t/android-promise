@@ -7,18 +7,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.javafaker.Faker
-import kotlinx.android.synthetic.main.activity_search.*
+import dev4vin.promise.IntermediateResult
 import dev4vin.promise.Promise
-import promise.app.R
-import promise.app.models.SearchableItem
-import dev4vin.promise.model.List
-import dev4vin.promise.model.ResponseCallBack
+import dev4vin.promise.data.log.LogUtil
 import dev4vin.promise.view.SearchableAdapter
+import kotlinx.android.synthetic.main.activity_search.*
+import promise.app.R
+import promise.app.mock.MockObject
+import promise.app.mock.MockRepo
+import promise.app.models.SearchableItem
+import java.lang.IllegalStateException
 
 class SearchActivity : AppCompatActivity() {
 
   private lateinit var searchableAdapter: SearchableAdapter<SearchableItem>
+
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -31,13 +34,42 @@ class SearchActivity : AppCompatActivity() {
     search_recyclerView.layoutManager = LinearLayoutManager(this)
     search_recyclerView.itemAnimator = DefaultItemAnimator()
     search_recyclerView.adapter = searchableAdapter
-    Promise.instance().execute({ someSearchItems() },
-        ResponseCallBack<List<SearchableItem>, Throwable>()
-        .withCallback {
-          Promise.instance().executeOnUi {
-            searchableAdapter.add(it)
+    Promise.instance().execute {
+      MockRepo().getMockObjects(50)
+          .then { list, args ->
+            IntermediateResult(list, args)
+          }.then { list, any ->
+
+            IntermediateResult(list, any)
           }
-        })
+          .then { list, any ->
+            /*searchableAdapter.add(list.map {
+              SearchableItem(it.string)
+            })*/
+            IntermediateResult(list, any)
+          }
+          .then { _, any ->
+            Promise.instance().executeOnUi {
+              if (any is String) {
+                title = any
+              }
+            }
+            null
+          }.error {
+            LogUtil.e(TAG, " error ", it)
+            null
+          }
+          .execute()
+    }
+
+
+    /* Promise.instance().execute({ someSearchItems() },
+         ResponseCallBack<List<SearchableItem>, Throwable>()
+             .withCallback {
+               Promise.instance().executeOnUi {
+
+               }
+             })*/
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -65,11 +97,8 @@ class SearchActivity : AppCompatActivity() {
     return true
   }
 
-  private fun someSearchItems(): List<SearchableItem> {
-    val list = List<SearchableItem>()
-    repeat((0 until 20).count()) {
-      list.add(SearchableItem(Faker().name().name()))
-    }
-    return list
+
+  companion object {
+    val TAG = LogUtil.makeTag(SearchActivity::class.java)
   }
 }
