@@ -332,7 +332,11 @@ public class FastParser {
       @NonNull final EndPoint endPoint,
       @NonNull final HttpPayload payload) throws JSONException,  Exception{
     if (!checkNetwork()) throw new Exception("Network not connected");
-    Request request = getHeaders(payload).url(getUrl(endPoint)).get().build();
+    final HttpUrl.Builder httpBuider = HttpUrl.parse(getUrl(endPoint)).newBuilder();
+    if (payload.payload() != null)
+      for (Map.Entry<String, Object> param : payload.payload().entrySet())
+        httpBuider.addQueryParameter(param.getKey(), String.valueOf(param.getValue()));
+    Request request = getHeaders(payload).url(httpBuider.build()).get().build();
     return syncMakeRequest(request);
   }
 
@@ -340,7 +344,11 @@ public class FastParser {
       @NonNull final EndPoint endPoint,
       @NonNull final HttpPayload payload, final Class<T> tClass) throws JSONException,  Exception{
     if (!checkNetwork()) throw new Exception("Network not connected");
-    Request request = getHeaders(payload).url(getUrl(endPoint)).get().build();
+    final HttpUrl.Builder httpBuider = HttpUrl.parse(getUrl(endPoint)).newBuilder();
+    if (payload.payload() != null)
+      for (Map.Entry<String, Object> param : payload.payload().entrySet())
+        httpBuider.addQueryParameter(param.getKey(), String.valueOf(param.getValue()));
+    Request request = getHeaders(payload).url(httpBuider.build()).get().build();
     return syncMakeRequest(request, tClass);
   }
 
