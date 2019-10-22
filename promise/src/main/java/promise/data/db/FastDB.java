@@ -81,13 +81,11 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   @Override
   public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
     LogUtil.d(TAG, "onUpgrade", oldVersion, newVersion);
-    if (shouldUpgrade(database, oldVersion, newVersion)) {
-      LogUtil.d(TAG, "onUpgrade", "upgrading tables");
-      upgrade(database, oldVersion, newVersion);
-    }
+    LogUtil.d(TAG, "onUpgrade", "upgrading tables");
+    upgrade(database, oldVersion, newVersion);
   }
 
-  public abstract boolean shouldUpgrade(SQLiteDatabase database, int oldVersion, int newVersion);
+  public abstract void doUpgrade(SQLiteDatabase database, int oldVersion, int newVersion);
 
   public String name() {
     return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
@@ -114,10 +112,14 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   private void upgrade(SQLiteDatabase database, int v1, int v2) {
    for (Table<?, SQLiteDatabase> table: Conditions.checkNotNull(tables())) {
     try {
-     if ((v2 - v1) == 1) checkTableExist(table).onUpgrade(database, v1, v2);
+     if ((v2 - v1) == 1) {
+       doUpgrade(database, v1, v2);
+       checkTableExist(table).onUpgrade(database, v1, v2);
+     }
      else {
       int i = v1;
       while (i < v2) {
+        doUpgrade(database, i, i +1);
        checkTableExist(table).onUpgrade(database, i, i + 1);
        i++;
       }
