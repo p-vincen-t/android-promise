@@ -1,3 +1,4 @@
+
 package promise.repo
 
 import promise.createInstance
@@ -53,10 +54,10 @@ class StoreRepository<T>(private val store: StoreHelper<T>) {
    */
   @JvmOverloads
   @Throws(Exception::class)
-  fun all(args: MutableMap<String, Any?>?, res: ((List<out T>, Any?) -> Unit)? = null, err: ((Exception) -> Unit)? = null): Pair<List<out T>?, Any?> {
+  fun all(args: MutableMap<String, Any?>?, res: ((List<T>, Any?) -> Unit)? = null, err: ((Exception) -> Unit)? = null): Pair<List<T>?, Any?> {
     onSetupListener?.onPrepArgs(args)
     if (checkCallbacksNotNull(res, err)) {
-      requireNotNull(res) { "response must be provided to together with err" }
+      if (res == null) throw IllegalArgumentException("response must be provided to together with err")
       store.asyncStore().all(res, err, args)
     } else return store.syncStore().all(args)
     return Pair(null, null)
@@ -75,7 +76,7 @@ class StoreRepository<T>(private val store: StoreHelper<T>) {
   fun one(args: MutableMap<String, Any?>?, res: ((T, Any?) -> Unit)? = null, err: ((Exception) -> Unit)? = null): Pair<T?, Any?> {
     onSetupListener?.onPrepArgs(args)
     if (checkCallbacksNotNull(res, err)) {
-      requireNotNull(res) { "response must be provided to together with err" }
+      if (res == null) throw IllegalArgumentException("response must be provided to together with err")
       store.asyncStore().one(res, err, args)
     } else return store.syncStore().one(args)
     return Pair(null, null)
@@ -95,7 +96,7 @@ class StoreRepository<T>(private val store: StoreHelper<T>) {
   fun save(t: T, args: MutableMap<String, Any?>?, res: ((T, Any?) -> Unit)? = null, err: ((Exception) -> Unit)? = null): Pair<T, Any?>? {
     onSetupListener?.onPrepArgs(args)
     if (checkCallbacksNotNull(res, err)) {
-      requireNotNull(res) { "response must be provided to together with err" }
+      if (res == null) throw IllegalArgumentException("response must be provided to together with err")
       store.asyncStore().save(t, res, err, args)
     } else return store.syncStore().save(t, args)
     return null
@@ -112,10 +113,10 @@ class StoreRepository<T>(private val store: StoreHelper<T>) {
    */
   @JvmOverloads
   @Throws(Exception::class)
-  fun save(t: List<in T>, args: MutableMap<String, Any?>?, res: ((Any?) -> Unit)? = null, err: ((Exception) -> Unit)? = null): Any? {
+  fun save(t: List<T>, args: MutableMap<String, Any?>?, res: ((Any?) -> Unit)? = null, err: ((Exception) -> Unit)? = null): Any? {
     onSetupListener?.onPrepArgs(args)
     if (checkCallbacksNotNull(res, err)) {
-      requireNotNull(res) { "withCallback must be provided to together with err" }
+      if (res == null) throw IllegalArgumentException("response must be provided to together with err")
       store.asyncStore().save(t, res, err, args)
     } else return store.syncStore().save(t, args)
     return null
@@ -135,7 +136,7 @@ class StoreRepository<T>(private val store: StoreHelper<T>) {
   fun update(t: T, args: MutableMap<String, Any?>?, res: ((T, Any?) -> Unit)? = null, err: ((Exception) -> Unit)? = null): Pair<T, Any?>? {
     onSetupListener?.onPrepArgs(args)
     if (checkCallbacksNotNull(res, err)) {
-      requireNotNull(res) { "withCallback must be provided to together with err" }
+      if (res == null) throw IllegalArgumentException("response must be provided to together with err")
       store.asyncStore().update(t, res, err, args)
     } else return store.syncStore().update(t, args)
     return null
@@ -152,10 +153,10 @@ class StoreRepository<T>(private val store: StoreHelper<T>) {
    */
   @JvmOverloads
   @Throws(Exception::class)
-  fun update(t: List<in T>, args: MutableMap<String, Any?>?, res: ((Any?) -> Unit)? = null, err: ((Exception) -> Unit)? = null): Any? {
+  fun update(t: List<T>, args: MutableMap<String, Any?>?, res: ((Any?) -> Unit)? = null, err: ((Exception) -> Unit)? = null): Any? {
     onSetupListener?.onPrepArgs(args)
     if (checkCallbacksNotNull(res, err)) {
-      requireNotNull(res) { "withCallback must be provided to together with err" }
+      if (res == null) throw IllegalArgumentException("response must be provided to together with err")
       store.asyncStore().update(t, res, err, args)
     } else return store.syncStore().update(t, args)
     return null
@@ -175,7 +176,7 @@ class StoreRepository<T>(private val store: StoreHelper<T>) {
   fun delete(t: T, args: MutableMap<String, Any?>?, res: ((Any?) -> Unit)? = null, err: ((Exception) -> Unit)? = null): Any? {
     onSetupListener?.onPrepArgs(args)
     if (checkCallbacksNotNull(res, err)) {
-      requireNotNull(res) { "withCallback must be provided to together with err" }
+      if (res == null) throw IllegalArgumentException("response must be provided to together with err")
       store.asyncStore().delete(t, res, err, args)
     } else return store.syncStore().delete(t, args)
     return null
@@ -192,10 +193,10 @@ class StoreRepository<T>(private val store: StoreHelper<T>) {
    */
   @JvmOverloads
   @Throws(Exception::class)
-  fun delete(t: List<in T>, args: MutableMap<String, Any?>?, res: ((Any?) -> Unit)? = null, err: ((Exception) -> Unit)? = null): Any? {
+  fun delete(t: List<T>, args: MutableMap<String, Any?>?, res: ((Any?) -> Unit)? = null, err: ((Exception) -> Unit)? = null): Any? {
     onSetupListener?.onPrepArgs(args)
     if (checkCallbacksNotNull(res, err)) {
-      requireNotNull(res) { "withCallback must be provided to together with err" }
+      if (res == null) throw IllegalArgumentException("response must be provided to together with err")
       store.asyncStore().delete(t, res, err, args)
     } else return store.syncStore().delete(t, args)
     return null
@@ -214,7 +215,7 @@ class StoreRepository<T>(private val store: StoreHelper<T>) {
   fun clear(args: MutableMap<String, Any?>?, res: ((Any?) -> Unit)? = null, err: ((Exception) -> Unit)? = null): Any? {
     onSetupListener?.onPrepArgs(args)
     if (checkCallbacksNotNull(res, err)) {
-      requireNotNull(res) { "withCallback must be provided to together with err" }
+      if (res == null) throw IllegalArgumentException("response must be provided to together with err")
       store.asyncStore().clear(res, err, args)
     } else return store.syncStore().clear(args)
     return null

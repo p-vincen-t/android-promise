@@ -63,7 +63,7 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   }
 
   public FastDB(int version) {
-    this(DEFAULT_NAME, version, null,null);
+    this(DEFAULT_NAME, version, null, null);
   }
 
   /*private void initTables() {
@@ -96,39 +96,36 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   public abstract List<Table<?, SQLiteDatabase>> tables();
 
   private void create(SQLiteDatabase database) {
-   boolean created = true;
+    boolean created = true;
 
-   for (Table<?, SQLiteDatabase> table: Conditions.checkNotNull(tables())) {
-    try {
-     created = created && create(table, database);
+    for (Table<?, SQLiteDatabase> table : Conditions.checkNotNull(tables())) {
+      try {
+        created = created && create(table, database);
+      } catch (DBError dbError) {
+        LogUtil.e(TAG, dbError);
+        return;
+      }
     }
-    catch (DBError dbError) {
-     LogUtil.e(TAG, dbError);
-     return;
-    }
-   }
   }
 
   private void upgrade(SQLiteDatabase database, int v1, int v2) {
-   for (Table<?, SQLiteDatabase> table: Conditions.checkNotNull(tables())) {
-    try {
-     if ((v2 - v1) == 1) {
-       doUpgrade(database, v1, v2);
-       checkTableExist(table).onUpgrade(database, v1, v2);
-     }
-     else {
-      int i = v1;
-      while (i < v2) {
-        doUpgrade(database, i, i +1);
-       checkTableExist(table).onUpgrade(database, i, i + 1);
-       i++;
-      }
-     }
-    } catch (ModelError modelError) {
-     LogUtil.e(TAG, modelError);
-     return;
+    int i = v1;
+    while (i < v2) {
+      doUpgrade(database, i, i + 1);
+      i++;
     }
-   }
+    for (Table<?, SQLiteDatabase> table : Conditions.checkNotNull(tables())) {
+      try {
+        int i1 = v1;
+        while (i1 < v2) {
+          checkTableExist(table).onUpgrade(database, i1, i1 + 1);
+          i1++;
+        }
+      } catch (ModelError modelError) {
+        LogUtil.e(TAG, modelError);
+        return;
+      }
+    }
   }
 
   public boolean add(SQLiteDatabase database, List<Table<?, SQLiteDatabase>> tables) {
@@ -179,7 +176,7 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   public Cursor query(QueryBuilder builder) {
     String sql = builder.build();
     String[] params = builder.buildParameters();
-    LogUtil.d(TAG, "query: "+ sql, " params: "+ Arrays.toString(params));
+    LogUtil.d(TAG, "query: " + sql, " params: " + Arrays.toString(params));
     return getReadableDatabase().rawQuery(sql, params);
   }
 
@@ -259,8 +256,8 @@ public abstract class FastDB extends SQLiteOpenHelper implements Crud<SQLiteData
   public boolean deleteAll() {
     synchronized (FastDB.class) {
       boolean deleted = true;
-      for (Table<?, SQLiteDatabase> table: Conditions.checkNotNull(tables()))
-       deleted = deleted && delete(checkTableExist(table));
+      for (Table<?, SQLiteDatabase> table : Conditions.checkNotNull(tables()))
+        deleted = deleted && delete(checkTableExist(table));
       return deleted;
     }
   }
