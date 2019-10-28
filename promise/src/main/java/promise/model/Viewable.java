@@ -18,15 +18,15 @@ import android.view.View;
 
 import androidx.annotation.LayoutRes;
 
+import promise.view.models.ViewHolder;
+
 /**
  * Created by yoctopus on 11/6/17.
  */
 
-public interface Viewable {
+public interface Viewable extends ViewHolder {
     @LayoutRes
     int layout();
-    void init(View view);
-    void bind(View view);
     void index(int index);
     int index();
 }
